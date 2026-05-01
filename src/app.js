@@ -8,7 +8,12 @@ app.use(cors());
 app.use(express.json());
 
 const turnosRoutes = require("./routes/turnos.routes");
+const medicosRoutes = require("./routes/medicos.routes");
+const pacientesRoutes = require("./routes/pacientes.routes");
+
 app.use("/turnos", turnosRoutes);
+app.use("/medicos", medicosRoutes);
+app.use("/pacientes", pacientesRoutes);
 
 app.get("/", (req, res) => {
   res.json({

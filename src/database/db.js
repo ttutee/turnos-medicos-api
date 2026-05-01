@@ -20,6 +20,26 @@ db.serialize(() => {
       estado TEXT DEFAULT 'pendiente'
     )
   `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS medicos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nombre TEXT NOT NULL,
+      especialidad TEXT NOT NULL,
+      email TEXT NOT NULL,
+      telefono TEXT NOT NULL
+    )
+  `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS pacientes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nombre TEXT NOT NULL,
+      dni TEXT NOT NULL,
+      email TEXT NOT NULL,
+      telefono TEXT NOT NULL
+    )
+  `);
 });
 
 module.exports = db;
