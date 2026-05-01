@@ -12,12 +12,13 @@ db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS turnos (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      paciente TEXT NOT NULL,
-      medico TEXT NOT NULL,
-      especialidad TEXT NOT NULL,
+      paciente_id INTEGER NOT NULL,
+      medico_id INTEGER NOT NULL,
       fecha TEXT NOT NULL,
       hora TEXT NOT NULL,
-      estado TEXT DEFAULT 'pendiente'
+      estado TEXT DEFAULT 'pendiente',
+      FOREIGN KEY (paciente_id) REFERENCES pacientes(id),
+      FOREIGN KEY (medico_id) REFERENCES medicos(id)
     )
   `);
 

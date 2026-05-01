@@ -1,12 +1,25 @@
 const db = require("../database/db");
 
+// GET todos los turnos con JOIN
 const obtenerTurnos = (req, res) => {
-  const sql = "SELECT * FROM turnos";
+  const sql = `
+    SELECT 
+      t.id,
+      p.nombre AS paciente,
+      m.nombre AS medico,
+      m.especialidad,
+      t.fecha,
+      t.hora,
+      t.estado
+    FROM turnos t
+    JOIN pacientes p ON t.paciente_id = p.id
+    JOIN medicos m ON t.medico_id = m.id
+  `;
 
   db.all(sql, [], (error, rows) => {
     if (error) {
       return res.status(500).json({
-        mensaje: "Error al obtener los turnos",
+        mensaje: "Error al obtener turnos",
         error: error.message,
       });
     }
@@ -15,106 +28,86 @@ const obtenerTurnos = (req, res) => {
   });
 };
 
+// GET por ID
 const obtenerTurnoPorId = (req, res) => {
   const { id } = req.params;
 
-  const sql = "SELECT * FROM turnos WHERE id = ?";
+  const sql = `
+    SELECT 
+      t.id,
+      p.nombre AS paciente,
+      m.nombre AS medico,
+      m.especialidad,
+      t.fecha,
+      t.hora,
+      t.estado
+    FROM turnos t
+    JOIN pacientes p ON t.paciente_id = p.id
+    JOIN medicos m ON t.medico_id = m.id
+    WHERE t.id = ?
+  `;
 
   db.get(sql, [id], (error, row) => {
     if (error) {
-      return res.status(500).json({
-        mensaje: "Error al obtener el turno",
-        error: error.message,
-      });
+      return res.status(500).json({ mensaje: "Error al obtener turno" });
     }
 
     if (!row) {
-      return res.status(404).json({
-        mensaje: "Turno no encontrado",
-      });
+      return res.status(404).json({ mensaje: "Turno no encontrado" });
     }
 
     res.json(row);
   });
 };
 
+// POST
 const crearTurno = (req, res) => {
-  const { paciente, medico, especialidad, fecha, hora } = req.body || {};
+  const { paciente_id, medico_id, fecha, hora } = req.body || {};
 
-  if (!paciente || !medico || !especialidad || !fecha || !hora) {
+  if (!paciente_id || !medico_id || !fecha || !hora) {
     return res.status(400).json({
       mensaje: "Todos los campos son obligatorios",
     });
   }
 
-  const fechaRegex = /^\d{4}-\d{2}-\d{2}$/;
-
-  if (!fechaRegex.test(fecha)) {
-    return res.status(400).json({
-      mensaje: "Formato de fecha inválido. Usar YYYY-MM-DD",
-    });
-  }
-
   const sql = `
-    INSERT INTO turnos (paciente, medico, especialidad, fecha, hora)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO turnos (paciente_id, medico_id, fecha, hora)
+    VALUES (?, ?, ?, ?)
   `;
 
-  db.run(sql, [paciente, medico, especialidad, fecha, hora], function (error) {
+  db.run(sql, [paciente_id, medico_id, fecha, hora], function (error) {
     if (error) {
       return res.status(500).json({
-        mensaje: "Error al crear el turno",
+        mensaje: "Error al crear turno",
         error: error.message,
       });
     }
 
     res.status(201).json({
       mensaje: "Turno creado correctamente",
-      turno: {
-        id: this.lastID,
-        paciente,
-        medico,
-        especialidad,
-        fecha,
-        hora,
-        estado: "pendiente",
-      },
+      id: this.lastID,
     });
   });
 };
 
+// PUT
 const actualizarTurno = (req, res) => {
   const { id } = req.params;
-  const { paciente, medico, especialidad, fecha, hora, estado } = req.body || {};
-
-  if (!paciente || !medico || !especialidad || !fecha || !hora || !estado) {
-    return res.status(400).json({
-      mensaje: "Todos los campos son obligatorios",
-    });
-  }
-
-  const fechaRegex = /^\d{4}-\d{2}-\d{2}$/;
-
-  if (!fechaRegex.test(fecha)) {
-    return res.status(400).json({
-      mensaje: "Formato de fecha inválido. Usar YYYY-MM-DD",
-    });
-  }
+  const { paciente_id, medico_id, fecha, hora, estado } = req.body || {};
 
   const sql = `
     UPDATE turnos
-    SET paciente = ?, medico = ?, especialidad = ?, fecha = ?, hora = ?, estado = ?
+    SET paciente_id = ?, medico_id = ?, fecha = ?, hora = ?, estado = ?
     WHERE id = ?
   `;
 
   db.run(
     sql,
-    [paciente, medico, especialidad, fecha, hora, estado, id],
+    [paciente_id, medico_id, fecha, hora, estado, id],
     function (error) {
       if (error) {
         return res.status(500).json({
-          mensaje: "Error al actualizar el turno",
-          error: error.message,
+          mensaje: "Error al actualizar turno",
         });
       }
 
@@ -131,16 +124,14 @@ const actualizarTurno = (req, res) => {
   );
 };
 
+// DELETE
 const eliminarTurno = (req, res) => {
   const { id } = req.params;
 
-  const sql = "DELETE FROM turnos WHERE id = ?";
-
-  db.run(sql, [id], function (error) {
+  db.run("DELETE FROM turnos WHERE id = ?", [id], function (error) {
     if (error) {
       return res.status(500).json({
-        mensaje: "Error al eliminar el turno",
-        error: error.message,
+        mensaje: "Error al eliminar turno",
       });
     }
 

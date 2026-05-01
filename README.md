@@ -1,62 +1,62 @@
-    🏥 API de Turnos Médicos
+# 🏥 API de Turnos Médicos
 
-API REST desarrollada con Node.js y Express para la gestión de turnos médicos.
+API REST desarrollada con Node.js, Express y SQLite para la gestión de turnos médicos, pacientes y profesionales.
 
 ## 🚀 Tecnologías
 
 * Node.js
 * Express
 * SQLite
+* Arquitectura MVC (routes + controllers)
 
 ## 📌 Funcionalidades
 
-* Crear turnos
-* Listar turnos
-* Obtener turno por ID
-* Actualizar turnos
-* Eliminar turnos
+* Gestión de pacientes
+* Gestión de médicos
+* Gestión de turnos
+* Relaciones entre entidades (paciente ↔ turno ↔ médico)
+* Consultas con JOIN
 
 ## 📡 Endpoints
 
-### Crear turno
+### 🧑 Pacientes
 
-POST /turnos
+* GET /pacientes
+* POST /pacientes
+* DELETE /pacientes/:id
 
-### Obtener todos
+### 👨‍⚕️ Médicos
 
-GET /turnos
+* GET /medicos
+* POST /medicos
+* DELETE /medicos/:id
 
-### Obtener por ID
+### 📅 Turnos
 
-GET /turnos/:id
+* GET /turnos
+* GET /turnos/:id
+* POST /turnos
+* PUT /turnos/:id
+* DELETE /turnos/:id
 
-### Actualizar
+## 🧠 Ejemplo de creación de turno
 
-PUT /turnos/:id
+```json
+{
+  "paciente_id": 1,
+  "medico_id": 1,
+  "fecha": "2026-05-01",
+  "hora": "10:00"
+}
+```
 
-### Eliminar
-
-DELETE /turnos/:id
-
-## ▶️ Cómo correr el proyecto
+## ▶️ Cómo ejecutar el proyecto
 
 ```bash
 npm install
 npm run dev
 ```
 
-## 📷 Ejemplo de uso
+## 💡 Autor
 
-```json
-{
-  "paciente": "Juan Perez",
-  "medico": "Dr. Gomez",
-  "especialidad": "Cardiologia",
-  "fecha": "2026-04-26",
-  "hora": "12:00"
-}
-```
-
-## 👨‍💻 Autor
-
-Proyecto desarrollado por Tomás para portfolio backend.
+Proyecto desarrollado por Tomás como parte de su portfolio backend.
